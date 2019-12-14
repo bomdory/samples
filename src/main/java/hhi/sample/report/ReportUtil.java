@@ -33,7 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ExcelUtil {
+public class ReportUtil {
 
 	public static List<List<Object>> readExcelAsList(File file) {
 		List<List<Object>> result = new ArrayList<List<Object>>();
