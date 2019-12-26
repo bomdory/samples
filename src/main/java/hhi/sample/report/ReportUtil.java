@@ -527,6 +527,7 @@ public class ReportUtil {
 		data.add(row);
 		data.add(row);
 		return data;
+		
 	}
 
 	public static void main(String[] args) throws IOException {

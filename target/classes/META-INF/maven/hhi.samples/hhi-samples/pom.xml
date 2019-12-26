@@ -23,8 +23,14 @@
 	<dependencies>
 
 		<dependency>
+           <groupId>com.hhi.hinet.iotgate.core</groupId>
+           <artifactId>HinetIoTGateCore</artifactId>
+           <version>1.0.0.RELEASE</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
@@ -57,6 +63,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
 	</dependencies>
