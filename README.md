@@ -1,5 +1,3 @@
-# samples
-이것저것 sample
-테스트
-AAAA
-나나나
+# samples 
+ - 이것저것 sample
+## 테스트
