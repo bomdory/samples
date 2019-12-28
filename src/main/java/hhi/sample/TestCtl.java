@@ -33,7 +33,12 @@ public class TestCtl {
 		}
 		System.out.println(body);
 
-		runner.process(req);
+		try {
+			runner.process(req);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Map<String,Object> result = new LinkedHashMap<>();
 		result.put("reqBody", body);
 		result.put("test", "aaa");

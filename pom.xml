@@ -21,12 +21,13 @@
 		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
 	<dependencies>
-
+	<!-- 
 		<dependency>
            <groupId>com.hhi.hinet.iotgate.core</groupId>
            <artifactId>HinetIoTGateCore</artifactId>
            <version>1.0.0.RELEASE</version>
 		</dependency>
+	 -->
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

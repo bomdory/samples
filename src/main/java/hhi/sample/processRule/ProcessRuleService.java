@@ -5,28 +5,26 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.hhi.hiway.core.dto.common.ComInfoDto;
-
 import hhi.sample.ContextProvider;
 
 @Service
 public class ProcessRuleService {
 
 	@Async
-	public void asyncProcess(ProcessOption option,ComInfoDto comInfo) {
+	public void asyncProcess(ProcessOption option) {
 		try {
-			syncProcess(option, comInfo);
+			syncProcess(option);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Async
-	public CompletableFuture<Object> asyncProcessWithReturn(ProcessOption option, ComInfoDto comInfo) {
+	public CompletableFuture<Object> asyncProcessWithReturn(ProcessOption option) {
 		CompletableFuture<Object> f = new CompletableFuture();
 		Object result;
 		try {
-			result = syncProcessvWithReturn(option, comInfo);
+			result = syncProcessvWithReturn(option);
 			f.complete(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -36,15 +34,15 @@ public class ProcessRuleService {
 
 	}
 
-	public Object syncProcessvWithReturn(ProcessOption option, ComInfoDto comInfo) throws Exception {
+	public Object syncProcessvWithReturn(ProcessOption option) throws Exception {
 		ProcessRule rule = ContextProvider.getProcessBean(option.getBeanName());
 		Object result = rule.proceess(option);
 		return result;
 	}
 
-	public void syncProcess(ProcessOption option,ComInfoDto comInfo) throws Exception {
+	public void syncProcess(ProcessOption option) throws Exception {
 		ProcessRule rule = ContextProvider.getProcessBean(option.getBeanName());
-		rule.proceess(comInfo);
+		rule.proceess(option);
 	}
 
 }

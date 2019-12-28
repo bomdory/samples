@@ -1,6 +1,7 @@
 package hhi.sample.processRule;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,7 +17,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
-import com.hhi.hiway.core.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +35,7 @@ public class ProcessRuleInfoConfig {
 	private void initConfig() throws IOException {
 		String basePathMapping = env.getProperty("rule.process.path");
 		System.out.println("basePathMapping : "+basePathMapping);
-		if (StringUtils.objectIfNullToEmpty(basePathMapping).length() < 1) {
+		if (basePathMapping == null || basePathMapping.isEmpty()) {
 			log.info("==== RequestParserInfoConfig :: Error ==> Not RequestParserInfoConfig");
 		} else {
 			try {
@@ -44,7 +44,9 @@ public class ProcessRuleInfoConfig {
 					YamlMapFactoryBean yaml = new YamlMapFactoryBean();
 					yaml.setResources(yamlResource);
 					yaml.setSingleton(true);
-					String filekey = StringUtils.getRuleFileKeyName(yamlResource.getURI());
+					URI uri = yamlResource.getURI();
+					String filekey = getRuleFileKeyName(uri);
+//					String filekey = StringUtils.getRuleFileKeyName(yamlResource.getURI());
 					if (filekey.contains(".yml")) {
 						filekey = filekey.substring(0, filekey.lastIndexOf(".yml"));
 					}
@@ -81,7 +83,7 @@ public class ProcessRuleInfoConfig {
 								opt.setErrMsg(errMsg);
 								opt.setTargetKey(targetKey);
 								opt.setVoid(isVoid);;
-								opt.setParameters(args.split("[,]", -1));
+//								opt.setParameters(args.split("[,]", -1));
 								opt.setTimeout(timeout);
 								optList.add(opt);
 							}
@@ -106,7 +108,14 @@ public class ProcessRuleInfoConfig {
 //	}
 	
 
-
+	private String getRuleFileKeyName(URI uri) {
+		String keyName = "";
+		String temp = uri.toString().substring(uri.toString().lastIndexOf("/"));
+		String replace1 = uri.toString().replaceFirst(temp, "." + temp.substring(1));
+		keyName = replace1.substring(replace1.lastIndexOf("/") + 1);
+		return keyName;
+	}
+	
 	public void init() {
 		data.clear();
 		try {

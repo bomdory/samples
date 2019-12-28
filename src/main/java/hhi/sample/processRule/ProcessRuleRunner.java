@@ -1,6 +1,5 @@
 package hhi.sample.processRule;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.hhi.hiway.core.dto.common.ComInfoDto;
-import com.hhi.hiway.core.exception.BizException;
 
 
 @Service
@@ -26,7 +22,7 @@ public class ProcessRuleRunner {
 	public void process(Object request) throws Exception {
 
 		// prepare cominfo by request
-		ComInfoDto comInfo = new ComInfoDto();
+//		ComInfoDto comInfo = new ComInfoDto();
 
 		String ruleKey = "process.service1";
 		
@@ -50,7 +46,7 @@ public class ProcessRuleRunner {
 
 		try {
 			
-			Map<ProcessOption,CompletableFuture<Object>> tryFuturMap = run(tryList, comInfo);
+			Map<ProcessOption,CompletableFuture<Object>> tryFuturMap = run(tryList);
 			for(ProcessOption opt: tryFuturMap.keySet()) {
 				CompletableFuture<Object> f = tryFuturMap.get(opt);
 				long timeout = opt.getTimeout();
@@ -67,7 +63,7 @@ public class ProcessRuleRunner {
 				//set target
 			}
 	
-			Map<ProcessOption,CompletableFuture<Object>> postFuturMap = run(postList, comInfo);
+			Map<ProcessOption,CompletableFuture<Object>> postFuturMap = run(postList);
 			for(ProcessOption opt: postFuturMap.keySet()) {
 				CompletableFuture<Object> f = postFuturMap.get(opt);
 				long timeout = opt.getTimeout();
@@ -87,7 +83,7 @@ public class ProcessRuleRunner {
 
 		} catch (Exception e) {
 			try {
-				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(catchList, comInfo);
+				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(catchList);
 				for(ProcessOption opt: futurMap.keySet()) {
 					CompletableFuture<Object> f = futurMap.get(opt);
 					long timeout = opt.getTimeout();
@@ -109,7 +105,7 @@ public class ProcessRuleRunner {
 
 		} finally {
 			try {
-				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(finallyList, comInfo);
+				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(finallyList);
 				for(ProcessOption opt: futurMap.keySet()) {
 					CompletableFuture<Object> f = futurMap.get(opt);
 					long timeout = opt.getTimeout();
@@ -133,16 +129,16 @@ public class ProcessRuleRunner {
 		}
 	}
 	
-	private Map<ProcessOption,CompletableFuture<Object>>  run(List<ProcessOption> optionList, ComInfoDto comInfo) throws Exception {
+	private Map<ProcessOption,CompletableFuture<Object>>  run(List<ProcessOption> optionList) throws Exception {
 		Map<ProcessOption,CompletableFuture<Object>> futureMap = new LinkedHashMap<>();
 		
 		for (ProcessOption option : optionList) {
 			String targetKey = option.getTargetKey();
 			if(option.isAsync()) {
 				if(option.isVoid()) {
-					ruleSvc.asyncProcess(option, comInfo);
+					ruleSvc.asyncProcess(option);
 				}else {
-					CompletableFuture<Object> f = ruleSvc.asyncProcessWithReturn(option, comInfo);
+					CompletableFuture<Object> f = ruleSvc.asyncProcessWithReturn(option);
 					if(f != null) {
 						futureMap.put(option, f);
 					}
@@ -150,10 +146,10 @@ public class ProcessRuleRunner {
 			}else {
 				try {
 					if(option.isVoid()) {
-						ruleSvc.asyncProcess(option, comInfo);
+						ruleSvc.asyncProcess(option);
 					}else {
 						
-						Object result = ruleSvc.syncProcessvWithReturn(option, comInfo);
+						Object result = ruleSvc.syncProcessvWithReturn(option);
 						if(result != null && targetKey != null) {
 							//set target
 						}
