@@ -23,14 +23,11 @@ public class ProcessRuleRunner {
 
 		// prepare cominfo by request
 //		ComInfoDto comInfo = new ComInfoDto();
-
+		
 		String ruleKey = "process.service1";
 		
 		
 		Map<String, List<ProcessOption>> ymlMap = ruleInfo.getRuleInfo(ruleKey);
-		
-		//only sync
-//		List<ProcessOption> preList = ymlMap.get("PRE");
 		
 		List<ProcessOption> tryList = ymlMap.get("TRY");
 		
@@ -133,7 +130,6 @@ public class ProcessRuleRunner {
 		Map<ProcessOption,CompletableFuture<Object>> futureMap = new LinkedHashMap<>();
 		
 		for (ProcessOption option : optionList) {
-			String targetKey = option.getTargetKey();
 			if(option.isAsync()) {
 				if(option.isVoid()) {
 					ruleSvc.asyncProcess(option);
@@ -146,10 +142,11 @@ public class ProcessRuleRunner {
 			}else {
 				try {
 					if(option.isVoid()) {
-						ruleSvc.asyncProcess(option);
+						ruleSvc.syncProcess(option);
 					}else {
 						
 						Object result = ruleSvc.syncProcessvWithReturn(option);
+						String targetKey = option.getTargetKey();
 						if(result != null && targetKey != null) {
 							//set target
 						}
@@ -167,14 +164,7 @@ public class ProcessRuleRunner {
 				}
 			}
 		}
-		
-//		for(ProcessOption opt: futureMap.keySet()) {
-//			CompletableFuture<Object> f = futureMap.get(opt);
-//			long timeout = opt.getTimeout();
-//			Object result = f.get(timeout, TimeUnit.MILLISECONDS);
-//			//set target
-//		}
-	
+
 		return futureMap;
 	}
 }
