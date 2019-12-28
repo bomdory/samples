@@ -1,0 +1,60 @@
+# section 구분자 : PARSING, MAPPING
+# conversion 속성
+#   targetKey : 각 저장소에 변환된 값을 저장할 key (필수)
+#   type : JAVASCRIPT, JAVA, RAW (필수)
+#   file : script 파일명 or java class 명 (JAVASCRIPT, JAVA 인 경우 필수)
+#   function : 실행할 함수명 (JAVASCRIPT, JAVA 인 경우 필수)
+#   args : 함수인자 값 - 없으면 빈값, 여러개인 경우 commma(,)로 구분 (필수)
+#   args 설정시 사용하는 예약어 
+#     - O_REQ_H : Origin Request Header (MAP<String,String>)
+#     - O_REQ_Q : Origin Request QueryString (MAP<String,String>)
+#     - O_REQ_B : Origin Request Body (JSON)
+#     - R_MTL_K : Multi Key (R_MTL_K.mkey -> key name이 자동으로 mkey1, mkey2, mkey3... 로 생성)
+
+PRE:
+  - option: 
+      bean: test1
+      async: true
+      void: true
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr1
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000
+TRY:
+  - option: 
+      targetKey: O_REQ_H.VNAME
+      args: key1
+  - option: 
+      targetKey: O_REQ_H.CMD
+      args: key2
+  - option: 
+      targetKey: O_REQ_B.data
+      args: key3
+      
+POST:
+  - option: 
+      targetKey: O_REQ_H.VNAME
+      args: key1           
+CATCH:
+  - option: 
+      targetKey: O_REQ_H.VNAME
+      args: key1
+  - option: 
+      targetKey: O_REQ_H.CMD
+      args: key2
+  - option: 
+      targetKey: O_REQ_B.data
+      args: key3   
+      
+FINALLY:
+  - option: 
+      targetKey: O_REQ_H.VNAME
+      args: key1
+  - option: 
+      targetKey: O_REQ_H.CMD
+      args: key2
+  - option: 
+      targetKey: O_REQ_B.data
+      args: key3         
