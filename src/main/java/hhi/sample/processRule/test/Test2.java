@@ -9,15 +9,15 @@ import hhi.sample.processRule.ProcessRule;
 public class Test2 implements ProcessRule{
 
 	@Override
-	public Object proceess(ProcessOption option) {
+	public Object proceess(ProcessOption option) throws Exception {
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("test2");
 		return null;
 	}
+
 
 }
