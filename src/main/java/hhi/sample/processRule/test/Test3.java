@@ -12,6 +12,7 @@ public class Test3 implements ProcessRule{
 	public Object proceess(ProcessOption option) throws Exception {
 		
 		//이거수정1
+		
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
