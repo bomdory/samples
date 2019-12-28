@@ -11,6 +11,7 @@ public class Test1 implements ProcessRule{
 	@Override
 	public Object proceess(ProcessOption param) throws Exception {
 		System.out.println("test1");
+		System.out.println(param);
 		Thread.sleep(3000);
 		return null;
 	}
