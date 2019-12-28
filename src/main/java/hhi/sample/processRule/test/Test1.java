@@ -9,7 +9,7 @@ import hhi.sample.processRule.ProcessRule;
 public class Test1 implements ProcessRule{
 
 	@Override
-	public Object proceess(ProcessOption option) throws Exception {
+	public Object proceess(ProcessOption param) throws Exception {
 		System.out.println("test1");
 		Thread.sleep(3000);
 		return null;
