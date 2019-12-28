@@ -13,6 +13,7 @@ public class Test3 implements ProcessRule{
 		
 		//이거수정1
 		
+		
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
