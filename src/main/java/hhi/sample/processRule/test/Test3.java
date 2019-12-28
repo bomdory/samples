@@ -10,8 +10,7 @@ public class Test3 implements ProcessRule{
 
 	@Override
 	public Object proceess(ProcessOption option) throws Exception {
-		
-//		난 이거 수정
+
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
