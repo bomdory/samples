@@ -15,6 +15,7 @@ public class ProcessOption {
 	private String errCode;
 	private String targetKey;
 	private Map<String,Object> paraMap = new ConcurrentHashMap<String, Object>();
+
 	private long timeout = 10000;
 	private boolean isVoid = false;
 	

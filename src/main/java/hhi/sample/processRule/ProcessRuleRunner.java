@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +20,18 @@ public class ProcessRuleRunner {
 	@Autowired
 	ProcessRuleInfoConfig ruleInfo;
 
-	public void process(Object request) throws Exception {
+	public Map<String,Object> process(Object request) throws Exception {
 
 		// prepare cominfo by request
 //		ComInfoDto comInfo = new ComInfoDto();
 		
 		String ruleKey = "process.service1";
-		
-		
+		// Map<String,Object> resultMap = new ConcurrentHashMap<String, Object>();
+
 		Map<String, List<ProcessOption>> ymlMap = ruleInfo.getRuleInfo(ruleKey);
 		
+		DataVessel vessel = new DataVessel();
+		vessel.setYmlMap(ymlMap);
 		List<ProcessOption> tryList = ymlMap.get("TRY");
 		
 //		after all process include async
@@ -43,13 +46,17 @@ public class ProcessRuleRunner {
 
 		try {
 			
-			Map<ProcessOption,CompletableFuture<Object>> tryFuturMap = run(tryList);
+			Map<ProcessOption,CompletableFuture<Object>> tryFuturMap = run(tryList, vessel);
 			for(ProcessOption opt: tryFuturMap.keySet()) {
 				CompletableFuture<Object> f = tryFuturMap.get(opt);
 				long timeout = opt.getTimeout();
 				try {
 					Object result = f.get(timeout, TimeUnit.MILLISECONDS);
+					String targetKey = opt.getTargetKey();
 					//add target
+					if(targetKey != null){
+						vessel.addResult(opt.getTargetKey(), result);
+					}
 				} catch (Exception e) {
 					if(opt.isIgnoreException()) {
 						//add log
@@ -60,13 +67,17 @@ public class ProcessRuleRunner {
 				//set target
 			}
 	
-			Map<ProcessOption,CompletableFuture<Object>> postFuturMap = run(postList);
+			Map<ProcessOption,CompletableFuture<Object>> postFuturMap = run(postList, vessel);
 			for(ProcessOption opt: postFuturMap.keySet()) {
 				CompletableFuture<Object> f = postFuturMap.get(opt);
 				long timeout = opt.getTimeout();
 				try {
 					Object result = f.get(timeout, TimeUnit.MILLISECONDS);
 					//add target
+					String targetKey = opt.getTargetKey();
+					if(targetKey != null){
+						vessel.addResult(opt.getTargetKey(), result);
+					}
 				} catch (Exception e) {
 					if(opt.isIgnoreException()) {
 						//add log
@@ -80,13 +91,17 @@ public class ProcessRuleRunner {
 
 		} catch (Exception e) {
 			try {
-				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(catchList);
+				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(catchList, vessel);
 				for(ProcessOption opt: futurMap.keySet()) {
 					CompletableFuture<Object> f = futurMap.get(opt);
 					long timeout = opt.getTimeout();
 					try {
 						Object result = f.get(timeout, TimeUnit.MILLISECONDS);
 						//add target
+						String targetKey = opt.getTargetKey();
+						if(targetKey != null){
+							vessel.addResult(opt.getTargetKey(), result);
+						}
 					} catch (Exception e1) {
 						if(opt.isIgnoreException()) {
 							//add log
@@ -102,13 +117,17 @@ public class ProcessRuleRunner {
 
 		} finally {
 			try {
-				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(finallyList);
+				Map<ProcessOption,CompletableFuture<Object>> futurMap = run(finallyList, vessel);
 				for(ProcessOption opt: futurMap.keySet()) {
 					CompletableFuture<Object> f = futurMap.get(opt);
 					long timeout = opt.getTimeout();
 					try {
 						Object result = f.get(timeout, TimeUnit.MILLISECONDS);
 						//add target
+						String targetKey = opt.getTargetKey();
+						if(targetKey != null){
+							vessel.addResult(opt.getTargetKey(), result);
+						}
 					} catch (Exception e) {
 						if(opt.isIgnoreException()) {
 							//add log
@@ -120,35 +139,39 @@ public class ProcessRuleRunner {
 				}
 				
 			} catch (Exception e) {
+			
 			}
 		
-			
+			return vessel.getResultMap();
 		}
 	}
 	
-	private Map<ProcessOption,CompletableFuture<Object>>  run(List<ProcessOption> optionList) throws Exception {
-		Map<ProcessOption,CompletableFuture<Object>> futureMap = new LinkedHashMap<>();
-		
+	private Map<ProcessOption,CompletableFuture<Object>> run(List<ProcessOption> optionList,
+			DataVessel vessel) throws Exception {
+		Map<ProcessOption, CompletableFuture<Object>> futureMap = new LinkedHashMap<>();
+
 		for (ProcessOption option : optionList) {
-			if(option.isAsync()) {
-				if(option.isVoid()) {
-					ruleSvc.asyncProcess(option);
-				}else {
-					CompletableFuture<Object> f = ruleSvc.asyncProcessWithReturn(option);
-					if(f != null) {
+			if (option.isAsync()) {
+				if (option.isVoid()) {
+					ruleSvc.asyncProcess(option,vessel);
+				} else {
+					CompletableFuture<Object> f = ruleSvc.asyncProcessWithReturn(option, vessel);
+					if (f != null) {
 						futureMap.put(option, f);
 					}
 				}
-			}else {
+			} else {
 				try {
-					if(option.isVoid()) {
-						ruleSvc.syncProcess(option);
-					}else {
-						
-						Object result = ruleSvc.syncProcessvWithReturn(option);
+					if (option.isVoid()) {
+						ruleSvc.syncProcess(option,vessel);
+					} else {
+						Object result = ruleSvc.syncProcessvWithReturn(option,vessel);
 						String targetKey = option.getTargetKey();
-						if(result != null && targetKey != null) {
-							//set target
+						if (result != null && targetKey != null) {
+							// set target
+							if (vessel != null) {
+								vessel.addResult(targetKey, result);
+							}
 						}
 					}
 				} catch (Exception e) {
