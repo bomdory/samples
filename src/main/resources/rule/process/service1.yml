@@ -11,7 +11,39 @@
 #     - O_REQ_B : Origin Request Body (JSON)
 #     - R_MTL_K : Multi Key (R_MTL_K.mkey -> key name이 자동으로 mkey1, mkey2, mkey3... 로 생성)
 
-PRE:
+TRY:
+  - option: 
+      bean: test1
+      async: true
+      void: false
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr1
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000
+  - option: 
+      bean: test2
+      async: false
+      void: true
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr1
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000
+POST:
+  - option: 
+      bean: test3
+      async: true
+      void: true
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr1
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000          
+CATCH:
   - option: 
       bean: test1
       async: true
@@ -21,40 +53,15 @@ PRE:
       targetKey: attr1
       errorCode: 3000
       errorMsg: test1 error
-      timeout: 10000
-TRY:
-  - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1
-  - option: 
-      targetKey: O_REQ_H.CMD
-      args: key2
-  - option: 
-      targetKey: O_REQ_B.data
-      args: key3
-      
-POST:
-  - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1           
-CATCH:
-  - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1
-  - option: 
-      targetKey: O_REQ_H.CMD
-      args: key2
-  - option: 
-      targetKey: O_REQ_B.data
-      args: key3   
-      
+      timeout: 10000      
 FINALLY:
   - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1
-  - option: 
-      targetKey: O_REQ_H.CMD
-      args: key2
-  - option: 
-      targetKey: O_REQ_B.data
-      args: key3         
+      bean: test3
+      async: true
+      void: true
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr1
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000
