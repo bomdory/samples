@@ -10,9 +10,9 @@ import hhi.sample.processRule.ProcessRule;
 public class Test1 implements ProcessRule{
 
 	@Override
-	public Object proceess(ProcessOption param, DataVessel dataVessel) throws Exception {
+	public Object proceess(ProcessOption option, DataVessel dataVessel) throws Exception {
 		System.out.println("test1");
-		System.out.println(param);
+		System.out.println(option);
 		Thread.sleep(1000);
 		return "테스트1";
 	}
