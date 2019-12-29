@@ -15,7 +15,7 @@ public class ProcessRuleService {
 	@Async
 	public void asyncProcess(ProcessOption option, DataVessel dataVessel) {
 		try {
-			syncProcess(option,dataVessel);
+			syncProcess(option, dataVessel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,13 +38,13 @@ public class ProcessRuleService {
 
 	public Object syncProcessvWithReturn(ProcessOption option, DataVessel dataVessel) throws Exception {
 		ProcessRule rule = ContextProvider.getProcessBean(option.getBeanName());
-		Object result = rule.proceess(option,dataVessel);
+		Object result = rule.proceess(option, dataVessel);
 		return result;
 	}
 
 	public void syncProcess(ProcessOption option, DataVessel dataVessel) throws Exception {
 		ProcessRule rule = ContextProvider.getProcessBean(option.getBeanName());
-		rule.proceess(option,dataVessel);
+		rule.proceess(option, dataVessel);
 	}
 
 }

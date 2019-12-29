@@ -83,6 +83,10 @@ public class ProcessRuleRunner {
 			}
 
 		} catch (Exception e) {
+			if (catchList == null || catchList.isEmpty()) {
+				// vessel.set
+				throw e;
+			}
 			try {
 				Map<ProcessOption, CompletableFuture<Object>> futurMap = run(catchList, vessel);
 				for (ProcessOption opt : futurMap.keySet()) {
@@ -106,12 +110,9 @@ public class ProcessRuleRunner {
 				}
 			} catch (Exception e2) {
 			}
-			throw e;
-
 		} finally {
 			try {
 				Map<ProcessOption, CompletableFuture<Object>> futurMap = run(finallyList, vessel);
-
 				for (ProcessOption opt : futurMap.keySet()) {
 					CompletableFuture<Object> f = futurMap.get(opt);
 					long timeout = opt.getTimeout();
@@ -135,9 +136,9 @@ public class ProcessRuleRunner {
 			} catch (Exception e) {
 
 			}
-
-			return vessel.getResultMap();
 		}
+		return vessel.getResultMap();
+
 	}
 
 	private Map<ProcessOption, CompletableFuture<Object>> run(List<ProcessOption> optionList, DataVessel vessel)
