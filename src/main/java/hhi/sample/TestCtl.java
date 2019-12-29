@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import hhi.sample.processRule.ProcessRuleInfoConfig;
 import hhi.sample.processRule.ProcessRuleRunner;
 
 @RestController
@@ -32,16 +31,18 @@ public class TestCtl {
 			System.out.println(name+""+value);
 		}
 		System.out.println(body);
-
+	    long t = System.currentTimeMillis();
+		Map<String,Object> result = new LinkedHashMap<>();
 		try {
-			runner.process(req);
+			Map<String, Object> resultMap = runner.process(req);
+			result.put("result",  resultMap);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Map<String,Object> result = new LinkedHashMap<>();
+		long interval = System.currentTimeMillis() - t;
 		result.put("reqBody", body);
 		result.put("test", "aaa");
+		result.put("interval", interval);
 		
 		return result;
 	}

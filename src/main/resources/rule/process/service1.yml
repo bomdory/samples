@@ -11,50 +11,67 @@
 #     - O_REQ_B : Origin Request Body (JSON)
 #     - R_MTL_K : Multi Key (R_MTL_K.mkey -> key name이 자동으로 mkey1, mkey2, mkey3... 로 생성)
 
-PRE:
+TRY:
   - option: 
       bean: test1
       async: true
-      void: true
+      void: false
       ignoreException: false
       args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
       targetKey: attr1
       errorCode: 3000
       errorMsg: test1 error
       timeout: 10000
-TRY:
   - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1
+      bean: test2
+      async: true
+      void: false
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr2
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000
   - option: 
-      targetKey: O_REQ_H.CMD
-      args: key2
-  - option: 
-      targetKey: O_REQ_B.data
-      args: key3
-      
+      bean: test3
+      async: true
+      void: false
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr3
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000      
 POST:
   - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1           
+      bean: test3
+      async: true
+      void: true
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr3
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000          
 CATCH:
   - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1
-  - option: 
-      targetKey: O_REQ_H.CMD
-      args: key2
-  - option: 
-      targetKey: O_REQ_B.data
-      args: key3   
-      
+      bean: test1
+      async: false
+      void: true
+      ignoreException: false
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr4
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000      
 FINALLY:
   - option: 
-      targetKey: O_REQ_H.VNAME
-      args: key1
-  - option: 
-      targetKey: O_REQ_H.CMD
-      args: key2
-  - option: 
-      targetKey: O_REQ_B.data
-      args: key3         
+      bean: test3
+      async: false
+      void: true
+      ignoreException: true
+      args: O_REQ_B.msg, R_MTL_K.key, 2, 5, 11
+      targetKey: attr5
+      errorCode: 3000
+      errorMsg: test1 error
+      timeout: 10000

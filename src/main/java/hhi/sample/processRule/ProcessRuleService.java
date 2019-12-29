@@ -3,28 +3,30 @@ package hhi.sample.processRule;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import hhi.sample.ContextProvider;
 
 @Service
+@EnableAsync
 public class ProcessRuleService {
 
 	@Async
-	public void asyncProcess(ProcessOption option) {
+	public void asyncProcess(ProcessOption option, DataVessel dataVessel) {
 		try {
-			syncProcess(option);
+			syncProcess(option, dataVessel);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Async
-	public CompletableFuture<Object> asyncProcessWithReturn(ProcessOption option) {
-		CompletableFuture<Object> f = new CompletableFuture();
+	public CompletableFuture<Object> asyncProcessWithReturn(ProcessOption option, DataVessel dataVessel) {
+		CompletableFuture<Object> f = new CompletableFuture<Object>();
 		Object result;
 		try {
-			result = syncProcessvWithReturn(option);
+			result = syncProcessvWithReturn(option, dataVessel);
 			f.complete(result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -34,15 +36,15 @@ public class ProcessRuleService {
 
 	}
 
-	public Object syncProcessvWithReturn(ProcessOption option) throws Exception {
+	public Object syncProcessvWithReturn(ProcessOption option, DataVessel dataVessel) throws Exception {
 		ProcessRule rule = ContextProvider.getProcessBean(option.getBeanName());
-		Object result = rule.proceess(option);
+		Object result = rule.proceess(option, dataVessel);
 		return result;
 	}
 
-	public void syncProcess(ProcessOption option) throws Exception {
+	public void syncProcess(ProcessOption option, DataVessel dataVessel) throws Exception {
 		ProcessRule rule = ContextProvider.getProcessBean(option.getBeanName());
-		rule.proceess(option);
+		rule.proceess(option, dataVessel);
 	}
 
 }
