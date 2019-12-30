@@ -18,7 +18,7 @@ public class TestCtl {
 
 	@Autowired
 	ProcessRuleRunner runner;
-	@RequestMapping("/*")
+	@RequestMapping()
 	public Map<String,Object> test(HttpServletRequest req, @RequestBody(required = false) String body) {
 		String method = req.getMethod();
 		String uri = req.getRequestURI();

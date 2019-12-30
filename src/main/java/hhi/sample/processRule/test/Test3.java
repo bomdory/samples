@@ -11,8 +11,6 @@ public class Test3 implements ProcessRule{
 
 	@Override
 	public Object proceess(ProcessOption option, DataVessel dataVessel) throws Exception {
-//		나나나
-//    asdf
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
