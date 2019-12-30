@@ -28,7 +28,7 @@ public class TestCtl {
 		while(hnames.hasMoreElements()) {
 			String name = hnames.nextElement();
 			String value = req.getHeader(name);
-			System.out.println(name+""+value);
+			System.out.println(name+" : "+value);
 		}
 		System.out.println(body);
 	    long t = System.currentTimeMillis();
@@ -41,7 +41,6 @@ public class TestCtl {
 		}
 		long interval = System.currentTimeMillis() - t;
 		result.put("reqBody", body);
-		result.put("test", "aaa");
 		result.put("interval", interval);
 		
 		return result;
